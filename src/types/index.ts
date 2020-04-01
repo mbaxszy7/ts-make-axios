@@ -29,4 +29,28 @@ export interface AxiosRequestConfig {
   method?: Methods
   data?: any
   params?: any
+  headers?: {
+    [propName: string]: string
+  }
+  responseType?: XMLHttpRequestResponseType
+  timeout?: number
+}
+
+export interface AxiosResponseConfig {
+  data: any
+  status: number
+  statusText: string
+  headers: any
+  config: AxiosRequestConfig
+  request: any
+}
+
+export interface AxiosPromise extends Promise<AxiosResponseConfig> {}
+
+export interface AxiosError extends Error {
+  isAxiosError: boolean
+  config: AxiosRequestConfig
+  code?: string | null
+  request?: any
+  response?: AxiosResponseConfig
 }
