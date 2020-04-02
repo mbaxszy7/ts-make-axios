@@ -1,35 +1,17 @@
-import { AxiosRequestConfig, AxiosPromise } from './types'
-import { transformRequestData, transformResponseData } from './helper/data'
-import { processHeaders } from './helper/headers'
-import buildUrl from './helper/url'
-import xhr from './xhr'
+import { extend } from './helper/utils'
+import { AxiosInstance } from './types/index'
+import Axios from './core/Axios'
 
-function transformHeaders(config: AxiosRequestConfig) {
-  const { headers = {}, data } = config
-  return processHeaders(headers, data)
+// instance 不仅仅拥有 Axios 类实例的所有方法本身也可以作为一个函数被调用
+function createInstance(): AxiosInstance {
+  const context = new Axios()
+  const instance = Axios.prototype.request.bind(context)
+
+  extend(instance, context)
+
+  return instance as AxiosInstance
 }
 
-function transformRequest(config: AxiosRequestConfig) {
-  return transformRequestData(config.data)
-}
-
-function transformUrl(config: AxiosRequestConfig) {
-  const { url, params } = config
-  return buildUrl(url, params)
-}
-
-function processConfig(config: AxiosRequestConfig) {
-  config.headers = transformHeaders(config)
-  config.data = transformRequest(config)
-  config.url = transformUrl(config)
-}
-
-function axios(config: AxiosRequestConfig): AxiosPromise {
-  processConfig(config)
-  return xhr(config).then(res => {
-    res.data = transformResponseData(res.data)
-    return res
-  })
-}
+const axios = createInstance()
 
 export default axios

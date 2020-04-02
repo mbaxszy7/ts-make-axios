@@ -8,11 +8,12 @@ export const transformRequestData = (data: any): any => {
 }
 
 export const transformResponseData = (data: any): any => {
-  if (typeof data === 'string') {
+  console.log(data, typeof data)
+  if (data && typeof data === 'string') {
     try {
       data = JSON.parse(data)
     } catch (e) {
-      console.error(e)
+      return data
     }
   }
   return data
