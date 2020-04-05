@@ -57,7 +57,7 @@ registerExtendRouter()
 
 registerInterceptorRouter()
 
-// registerConfigRouter()
+registerConfigRouter()
 
 // registerCancelRouter()
 
@@ -78,7 +78,7 @@ function registerSimpleRouter() {
   })
 }
 
-function registerBaseRouter () {
+function registerBaseRouter() {
   router.get('/base/get', function(req, res) {
     res.json(req.query)
   })
@@ -89,7 +89,7 @@ function registerBaseRouter () {
 
   router.post('/base/buffer', function(req, res) {
     let msg = []
-    req.on('data', (chunk) => {
+    req.on('data', chunk => {
       if (chunk) {
         msg.push(chunk)
       }
@@ -101,7 +101,7 @@ function registerBaseRouter () {
   })
 }
 
-function registerErrorRouter () {
+function registerErrorRouter() {
   router.get('/error/get', function(req, res) {
     if (Math.random() > 0.5) {
       res.json({
@@ -122,7 +122,7 @@ function registerErrorRouter () {
   })
 }
 
-function registerExtendRouter () {
+function registerExtendRouter() {
   router.get('/extend/get', function(req, res) {
     res.json({
       msg: 'hello world'
@@ -165,17 +165,22 @@ function registerExtendRouter () {
   })
 }
 
-function registerInterceptorRouter () {
+function registerInterceptorRouter() {
   router.get('/interceptor/get', function(req, res) {
     res.end('hello')
   })
 }
 
-// function registerConfigRouter () {
-//   router.post('/config/post', function(req, res) {
-//     res.json(req.body)
-//   })
-// }
+function registerConfigRouter() {
+  router.post('/config/post', function(req, res) {
+    res.json(req.body)
+  })
+  router.get('/config/get', function(req, res) {
+    res.json({
+      hello: 'get'
+    })
+  })
+}
 
 // function registerCancelRouter () {
 //   router.get('/cancel/get', function(req, res) {

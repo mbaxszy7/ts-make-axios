@@ -1,14 +1,13 @@
-import { isPlainOject } from './utils'
+import { isPlainObject } from './utils'
 
 export const transformRequestData = (data: any): any => {
-  if (isPlainOject(data)) {
+  if (isPlainObject(data)) {
     return JSON.stringify(data)
   }
   return data
 }
 
 export const transformResponseData = (data: any): any => {
-  console.log(data, typeof data)
   if (data && typeof data === 'string') {
     try {
       data = JSON.parse(data)

@@ -4,7 +4,7 @@ import { createError } from '../helper/error'
 
 function xhr(config: AxiosRequestConfig): AxiosPromise {
   return new Promise((resolve, reject) => {
-    const { data = null, method = 'get', url, headers, responseType, timeout } = config
+    const { data = null, method = 'get', url, headers, responseType, timeout, cancelToken } = config
 
     const request = new XMLHttpRequest()
 
@@ -65,6 +65,14 @@ function xhr(config: AxiosRequestConfig): AxiosPromise {
         } else {
           request.setRequestHeader(name, headers[name])
         }
+      })
+    }
+
+    if (cancelToken) {
+      // tslint:disable-next-line: no-floating-promises
+      cancelToken.promise.then(reason => {
+        request.abort()
+        reject(reason)
       })
     }
 

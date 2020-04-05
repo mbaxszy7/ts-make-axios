@@ -24,16 +24,24 @@ export type Methods =
   | 'patch'
   | 'PATCH'
 
+export interface AxiosTransformer {
+  (data: any, headers?: any): any
+}
+
 export interface AxiosRequestConfig {
   url?: string
   method?: Methods
   data?: any
   params?: any
   headers?: {
-    [propName: string]: string
+    [propName: string]: any
   }
   responseType?: XMLHttpRequestResponseType
   timeout?: number
+  [propName: string]: any
+  transformRequest?: AxiosTransformer | AxiosTransformer[]
+  transformResponse?: AxiosTransformer | AxiosTransformer[]
+  cancelToken?: CancelToken
 }
 
 export interface AxiosResponseConfig<T = any> {
@@ -56,6 +64,7 @@ export interface AxiosError extends Error {
 }
 
 export interface AxiosInterface {
+  defaults: AxiosRequestConfig
   interceptors: {
     request: AxiosInterceptorManager<AxiosRequestConfig>
     response: AxiosInterceptorManager<AxiosResponseConfig>
@@ -95,4 +104,32 @@ export interface AxiosInterceptorManager<T> {
   use(resolved: ResolvedFn<T>, rejected?: RejectedFn): number
 
   eject(id: number): void
+}
+
+export interface AxiosStatic extends AxiosInstance {
+  create(config?: AxiosRequestConfig): AxiosInstance
+}
+
+export interface CancelToken {
+  promise: Promise<string>
+  reason?: string
+}
+
+export interface Canceler {
+  (message?: string): void
+}
+
+export interface CancelExrcutor {
+  (cancel: Canceler): void
+}
+
+export interface CancelTokenSource {
+  token: CancelToken
+  cancel: Canceler
+}
+
+export interface CancelTokenStatic {
+  new (executor: CancelExrcutor): CancelToken
+
+  source(): CancelTokenSource
 }

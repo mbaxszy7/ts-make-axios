@@ -1,4 +1,4 @@
-import { isDate, isPlainOject } from './utils'
+import { isDate, isPlainObject } from './utils'
 /**
  * rebuild url & params
  * params:
@@ -47,7 +47,7 @@ const buildUrl = (url: string, params?: any): string => {
               : '',
           ''
         )
-      } else if (isPlainOject(val)) {
+      } else if (isPlainObject(val)) {
         try {
           nowPart = `${encode(key)}=${encode(JSON.stringify(val))}`
         } catch (e) {
