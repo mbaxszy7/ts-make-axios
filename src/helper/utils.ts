@@ -43,3 +43,11 @@ export const deepMerge = (...objs: any[]): any => {
 
   return result
 }
+
+export const isFormData = (val: any): val is FormData => {
+  return val && val instanceof FormData
+}
+
+export const isURLSearchParams = (val: any): val is URLSearchParams => {
+  return val && val instanceof URLSearchParams
+}

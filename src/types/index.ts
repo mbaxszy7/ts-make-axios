@@ -38,14 +38,27 @@ export interface AxiosRequestConfig {
   }
   responseType?: XMLHttpRequestResponseType
   timeout?: number
-  [propName: string]: any
+
   transformRequest?: AxiosTransformer | AxiosTransformer[]
   transformResponse?: AxiosTransformer | AxiosTransformer[]
+
   cancelToken?: CancelTokenInterface
   withCredentials?: boolean
 
   xsrfCookieName?: string
   xsrfHeaderName?: string
+
+  onDownloadprogress?: (e: ProgressEvent) => void
+  onUploadprogress?: (e: ProgressEvent) => void
+
+  auth?: AxiosBasicCredentials
+
+  validateStatus?: (status: number) => boolean
+  paramsSerializer?: (params: any) => string
+
+  baseURL?: string
+
+  [propName: string]: any
 }
 
 export interface AxiosResponseConfig<T = any> {
@@ -73,6 +86,8 @@ export interface AxiosInterface {
     request: AxiosInterceptorManager<AxiosRequestConfig>
     response: AxiosInterceptorManager<AxiosResponseConfig>
   }
+
+  getUri(config?: AxiosRequestConfig): string
   request<T = any>(config: AxiosRequestConfig): AxiosPromise<T>
 
   get<T = any>(url: string, config?: AxiosRequestConfig): AxiosPromise<T>
@@ -152,4 +167,9 @@ export interface CancelStatic {
 export interface URLOrigin {
   host: string
   protocol: string
+}
+
+export interface AxiosBasicCredentials {
+  username: string
+  password: string
 }

@@ -1,4 +1,4 @@
-import { isDate, isPlainObject } from './utils'
+import { isDate, isPlainObject, isURLSearchParams } from './utils'
 import { URLOrigin } from '../types'
 /**
  * rebuild url & params
@@ -30,10 +30,17 @@ function encode(val: string): string {
     .replace(/%5D/gi, ']')
 }
 
-const buildUrl = (url: string, params?: any): string => {
+const buildUrl = (
+  url: string,
+  params?: any,
+  paramsSerializer?: (params: any) => string
+): string => {
   if (!params) return url
-  if (typeof params === 'object') {
-    const query = Object.keys(params).reduce((preParts, key) => {
+  let quries = ''
+  if (paramsSerializer) quries = paramsSerializer(params)
+  else if (isURLSearchParams(params)) quries = params.toString()
+  else if (typeof params === 'object') {
+    quries = Object.keys(params).reduce((preParts, key) => {
       const val = params[key]
       let nowPart = ''
       if (val == null) {
@@ -62,14 +69,13 @@ const buildUrl = (url: string, params?: any): string => {
 
       return nowPart ? (preParts ? `${preParts}&${nowPart}` : nowPart) : preParts
     }, '')
-
-    const hashTagIndex = url.indexOf('#')
-    if (hashTagIndex !== -1) {
-      url = url.slice(0, hashTagIndex)
-    }
-
-    url += (url.indexOf('?') === -1 ? '?' : '&') + query
   }
+  const hashTagIndex = url.indexOf('#')
+  if (hashTagIndex !== -1) {
+    url = url.slice(0, hashTagIndex)
+  }
+
+  url += (url.indexOf('?') === -1 ? '?' : '&') + quries
   return url
 }
 
@@ -93,4 +99,12 @@ export const isURLSameOrigin = (requestURL: string): boolean => {
   return (
     currentOrigin.host === parsedOrigin.host && currentOrigin.protocol === currentOrigin.protocol
   )
+}
+
+export function isAbsoluteURL(url: string): boolean {
+  return /^([a-z][a-z\d\+\-\.]*:)?\/\//i.test(url)
+}
+
+export function combineURL(baseURL: string, relativeURL?: string): string {
+  return relativeURL ? baseURL.replace(/\/+$/, '') + '/' + relativeURL.replace(/^\/+/, '') : baseURL
 }

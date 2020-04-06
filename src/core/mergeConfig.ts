@@ -37,9 +37,9 @@ const mergeConfig = (
   Object.keys(config2).forEach(k => {
     if (k === 'transformRequest' || k === 'transformResponse') {
       copiedConfig2[k] = mergeTransform(config1[k] as AxiosTransformer[], config2![k]!, k)
-    } else if (k === 'headers') {
-      const headers = deepMergeHeaders(config1['headers'], config2!['headers'])
-      copiedConfig2['headers'] = headers
+    } else if (k === 'headers' || k === 'auth') {
+      const headers = deepMergeHeaders(config1[k], config2![k])
+      copiedConfig2[k] = headers
     } else if (config2![k] != null) {
       copiedConfig2[k] = config2![k]
     }

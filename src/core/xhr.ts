@@ -1,3 +1,4 @@
+import { isFormData } from './../helper/utils'
 import { AxiosRequestConfig, AxiosResponseConfig, AxiosPromise } from '../types'
 import { parseHeaders } from '../helper/headers'
 import { createError } from '../helper/error'
@@ -16,7 +17,11 @@ function xhr(config: AxiosRequestConfig): AxiosPromise {
       cancelToken,
       withCredentials,
       xsrfCookieName,
-      xsrfHeaderName
+      xsrfHeaderName,
+      onDownloadprogress,
+      onUploadprogress,
+      auth,
+      validateStatus
     } = config
 
     const request = new XMLHttpRequest()
@@ -31,6 +36,14 @@ function xhr(config: AxiosRequestConfig): AxiosPromise {
 
     if (withCredentials) {
       request.withCredentials = withCredentials
+    }
+
+    if (onDownloadprogress) {
+      request.onprogress = onDownloadprogress
+    }
+
+    if (onUploadprogress) {
+      request.upload.onprogress = onUploadprogress
     }
 
     request.open(method.toUpperCase(), url!)
@@ -50,7 +63,7 @@ function xhr(config: AxiosRequestConfig): AxiosPromise {
         config,
         request
       }
-      if ((response.status >= 200 && response.status <= 300) || response.status === 304) {
+      if (!validateStatus || validateStatus(response.status)) {
         return resolve(response)
       } else {
         return reject(
@@ -73,6 +86,14 @@ function xhr(config: AxiosRequestConfig): AxiosPromise {
       return reject(
         createError(`timeout of ${timeout}ms exceeded`, config, 'ECONNABORTED', request)
       )
+    }
+
+    if (isFormData(data) && headers) {
+      delete headers['Content-Type']
+    }
+
+    if (auth) {
+      headers!['Authorization'] = 'Basic ' + btoa(auth.username + ':' + auth.password)
     }
 
     if (withCredentials || (isURLSameOrigin(url!) && xsrfCookieName)) {
