@@ -1,4 +1,5 @@
 import { isDate, isPlainObject } from './utils'
+import { URLOrigin } from '../types'
 /**
  * rebuild url & params
  * params:
@@ -73,3 +74,23 @@ const buildUrl = (url: string, params?: any): string => {
 }
 
 export default buildUrl
+
+const urlParsingURL = document.createElement('a')
+
+const resolveURL = (url: string): URLOrigin => {
+  urlParsingURL.setAttribute('href', url)
+  const { host, protocol } = urlParsingURL
+  return {
+    host,
+    protocol
+  }
+}
+
+const currentOrigin = resolveURL(window.location.href)
+
+export const isURLSameOrigin = (requestURL: string): boolean => {
+  const parsedOrigin = resolveURL(requestURL)
+  return (
+    currentOrigin.host === parsedOrigin.host && currentOrigin.protocol === currentOrigin.protocol
+  )
+}

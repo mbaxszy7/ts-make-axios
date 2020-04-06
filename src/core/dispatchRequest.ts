@@ -19,7 +19,14 @@ function processConfig(config: AxiosRequestConfig) {
   config.headers = flattenHeaders(config.headers, config.method!)
 }
 
+function throwIfCanceled(config: AxiosRequestConfig) {
+  if (config.cancelToken) {
+    config.cancelToken.throwIfRequested()
+  }
+}
+
 function dispatchRequest(config: AxiosRequestConfig): AxiosPromise {
+  throwIfCanceled(config)
   processConfig(config)
   return xhr(config).then(res => {
     res.data = transform(res.data, config.transformResponse as AxiosTransformer[], config.headers)
