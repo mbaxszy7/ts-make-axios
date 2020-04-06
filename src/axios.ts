@@ -25,5 +25,6 @@ axios.create = function create(config: AxiosRequestConfig) {
 axios.CancelToken = CancelToken
 axios.isCancel = isCancel
 axios.Cancel = Cancel
+axios.Axios = Axios
 
 export default axios

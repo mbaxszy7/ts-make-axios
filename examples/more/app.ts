@@ -151,6 +151,7 @@ const fakeConfig = {
 }
 
 console.log(axios.getUri(fakeConfig))
+console.log(new axios.Axios())
 
 // const instance = axios.create({
 //   paramsSerializer(params) {

@@ -125,11 +125,16 @@ export interface AxiosInterceptorManager<T> {
   eject(id: number): void
 }
 
+export interface AxiosClassConstructor {
+  new (config: AxiosRequestConfig): AxiosInterface
+}
+
 export interface AxiosStatic extends AxiosInstance {
   create(config?: AxiosRequestConfig): AxiosInstance
   CancelToken: CancelTokenConstructor
   Cancel: CancelStatic
   isCancel: (val: any) => boolean
+  Axios: AxiosClassConstructor
 }
 
 export interface CancelTokenConstructor {
